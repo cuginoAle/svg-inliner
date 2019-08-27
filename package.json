@@ -1,0 +1,21 @@
+{
+  "name": "svg-inliner",
+  "version": "0.0.1",
+  "description": "cli tool to import and inline svgs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "svg",
+    "inline",
+    "react",
+    "cli"
+  ],
+  "author": "alessio carnevale",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^2.4.2"
+  },
+  "devDependencies": {}
+}
