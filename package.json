@@ -1,5 +1,5 @@
 {
-  "name": "svg-inliner",
+  "name": "@cuginoale/svg-inliner",
   "version": "0.0.1",
   "description": "cli tool to import and inline svgs",
   "main": "index.js",
