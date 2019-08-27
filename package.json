@@ -1,8 +1,11 @@
 {
   "name": "@cuginoale/svg-inliner",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "cli tool to import and inline svgs",
   "main": "index.js",
+  "bin": {
+    "svg-inliner": "./index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
