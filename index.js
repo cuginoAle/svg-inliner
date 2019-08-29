@@ -2,52 +2,76 @@
 
 const fs = require('fs')
 const chalk = require('chalk')
-
-const exportDir = `${__dirname}/icons`
-const indexFile = `${exportDir}/all-icons.js`
-const iconsDir = `./`
-const mdIconsMap = `${exportDir}/all-icons.md`
 const ver = require('./package.json').version
+const htmlTemplate = require('./htmlTemplate')
+var path = require('path')
+const {toPascalCase} = require('./helpers')
 
-const logo = `
----------------------------------------------
-╔═╗┬  ┬┌─┐  ╦┌┐┌┬  ┬┌┐┌┌─┐┬─┐
-╚═╗└┐┌┘│ ┬  ║││││  ││││├┤ ├┬┘
-╚═╝ └┘ └─┘  ╩┘└┘┴─┘┴┘└┘└─┘┴└─    ver. ${ver}
----------------------------------------------
+const currentPath = path.resolve(process.cwd())
 
-`
+const exportDir = `${currentPath}`
+const indexFile = `${exportDir}/all-icons.js`
+const iconsDir = `${currentPath}`
+const htmlIconsMap = `${exportDir}/all-icons.html`
 
-console.log(logo)
+const logo = require('./logo')
+console.log(logo(ver))
 
-const svgs = []
 fs.readdir(iconsDir, function (err, items) {
   if (err) {
     console.error(err)
-  } else {
-    const files = items.filter(file => file.indexOf('.svg') > 0)
-    console.log(`Working...`)
-
-    files.forEach((file, i) => {
-      const svg = fs.readFileSync(`${iconsDir}/${file}`, 'utf8')
-      const fileName = file.split('.')[0]
-
-      const svgTag = svg.replace('<svg ', `<svg class="icon-img ${fileName}-svg" `)
-      svgs.push(`['${fileName}'] : \`${svgTag}\``)
-    })
-
-    const md = files.map(f => `|${f.split('.')[0]}|<img src="${iconsDir}/${f}" width="100%" height="44" />|`).join('\n')
-    fs.writeFileSync(mdIconsMap, `| Name | icon |\n|---|---|\n${md}`)
+    process.exitCode(1)
+    return
   }
 
-  // write our generic index.js
+  const files = items.filter(file => file.indexOf('.svg') > 0)
+  console.log(`Working...`)
 
-  fs.writeFileSync(indexFile, `
-module.exports = {
-  ${svgs.join(',')}\n
-  }\n`)
+  const svgs = files.map((file, i) => {
+    const fName = file.split('.')[0]
+    const fileName = toPascalCase(fName)
 
-  console.log(`${chalk.green('✔')} Exported ${svgs.length} svgs to all-index.js`)
+    const svgTag = fs.readFileSync(`${iconsDir}/${file}`, 'utf8')
+      
+    const asString=`${
+      svgTag.replace('<svg ', `\n<svg class='svg-icon ${fName}-svg'} `)
+    }`
+    const asRC = `props => (${
+      svgTag
+        .replace('<svg ', `\n<svg className={(props.className||'') + ' svg-icon ${fName}-svg'} `)
+        .replace(/fill-rule/g, `fillRule`)
+        .replace(/clip-rule/g, `clipRule`)
+    })`
+
+    return {
+      fileName,
+      asRC,
+      asString
+    }    
+  })
+
+  const svgsExport = svgs.map(({fileName,asRC}) => {
+    return `export const ${fileName} =  ${asRC}`    
+  })
+
+  const iconsHtml = svgs.map(obj => `
+      <div class='icon-def'>
+        <span class='icon-img'>${obj.asString}</span>      
+        <span class='icon-name'>${obj.fileName}</span>
+      </div>
+    `)
+
+  fs.writeFileSync(htmlIconsMap, htmlTemplate(`
+    <div class='icons-list'>
+      ${iconsHtml.join('')}
+    </div>
+    `, ver))
+
+  fs.writeFileSync(indexFile, `import React from 'react'\n${svgsExport.join('\n')}\n`)
+
+  console.log(`${chalk.green('✔')} Exported ${svgsExport.length} svgs to all-icons.js`)
+  console.log(`${chalk.green('✔')} Icons map: ${chalk.blueBright(htmlIconsMap)}`)
   console.log('---------------------------------------------')
   console.log()
 })
+
