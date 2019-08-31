@@ -26,11 +26,8 @@ fs.readdir(iconsDir, async function (err, items) {
   }
 
   const settings = await getUserSettings()
-  console.log('-------')
-  console.log(settings)
 
   const files = items.filter(file => file.indexOf('.svg') > 0)
-  console.log(`Working...`)
 
   const svgs = await Promise.all(files.map(async (file, i) => {
     const fName = file.split('.')[0]
@@ -50,7 +47,7 @@ fs.readdir(iconsDir, async function (err, items) {
         .replace(/fill-rule/g, `fillRule`)
         .replace(/clip-rule/g, `clipRule`)
     })`
-    
+
     return new Promise((resolve, reject) => {
       resolve({
         fileName,
