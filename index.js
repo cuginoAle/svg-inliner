@@ -4,8 +4,9 @@ const fs = require('fs')
 const chalk = require('chalk')
 const ver = require('./package.json').version
 const htmlTemplate = require('./htmlTemplate')
-var path = require('path')
-const {toPascalCase} = require('./helpers')
+const path = require('path')
+
+const { toPascalCase, getUserSettings, svgo } = require('./helpers')
 
 const currentPath = path.resolve(process.cwd())
 
@@ -17,41 +18,50 @@ const htmlIconsMap = `${exportDir}/all-icons.html`
 const logo = require('./logo')
 console.log(logo(ver))
 
-fs.readdir(iconsDir, function (err, items) {
+fs.readdir(iconsDir, async function (err, items) {
   if (err) {
     console.error(err)
     process.exitCode(1)
     return
   }
 
+  const settings = await getUserSettings()
+  console.log('-------')
+  console.log(settings)
+
   const files = items.filter(file => file.indexOf('.svg') > 0)
   console.log(`Working...`)
 
-  const svgs = files.map((file, i) => {
+  const svgs = await Promise.all(files.map(async (file, i) => {
     const fName = file.split('.')[0]
     const fileName = toPascalCase(fName)
+    console.log(fileName)
 
     const svgTag = fs.readFileSync(`${iconsDir}/${file}`, 'utf8')
-      
-    const asString=`${
-      svgTag.replace('<svg ', `\n<svg class='svg-icon ${fName}-svg'} `)
+
+    const optimisedSvg = await svgo.optimize(svgTag)
+
+    const asString = `${
+      optimisedSvg.data.replace('<svg ', `\n<svg class='svg-icon ${fName}-svg' `)
     }`
     const asRC = `props => (${
-      svgTag
+      optimisedSvg.data
         .replace('<svg ', `\n<svg className={(props.className||'') + ' svg-icon ${fName}-svg'} `)
         .replace(/fill-rule/g, `fillRule`)
         .replace(/clip-rule/g, `clipRule`)
     })`
+    
+    return new Promise((resolve, reject) => {
+      resolve({
+        fileName,
+        asRC,
+        asString
+      })
+    })
+  }))
 
-    return {
-      fileName,
-      asRC,
-      asString
-    }    
-  })
-
-  const svgsExport = svgs.map(({fileName,asRC}) => {
-    return `export const ${fileName} =  ${asRC}`    
+  const svgsExport = svgs.map(({ fileName, asRC, asString }) => {
+    return `export const ${fileName} =  ${settings === 'String' ? (`\`${asString}\``) : asRC}`
   })
 
   const iconsHtml = svgs.map(obj => `
@@ -74,4 +84,3 @@ fs.readdir(iconsDir, function (err, items) {
   console.log('---------------------------------------------')
   console.log()
 })
-
