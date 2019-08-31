@@ -1,6 +1,11 @@
 // const { select } = require('./cliSelect.js')
+const fs = require('fs')
 const input = require('input')
 const SVGO = require('svgo')
+const currentPath = process.cwd()
+const configFileName = '.svgrc'
+const path = require('path')
+const configPath = path.resolve(currentPath, configFileName)
 
 const svgo = new SVGO({
   plugins: [{
@@ -77,11 +82,19 @@ const svgo = new SVGO({
 module.exports = {
   svgo,
   getUserSettings: () => {
-    const options = [
-      'React component',
-      'String'
-    ]
-    return input.select('Export as ', options)
+    if (fs.existsSync(configPath)) {
+      const exportType = JSON.parse(fs.readFileSync(configPath))
+
+      return exportType
+    } else {
+      const options = [
+        'React component',
+        'String'
+      ]
+      const selectedOption = input.select('Export as ', options)
+      fs.writeFileSync(configPath, JSON.stringify(selectedOption, null, 2))
+      return selectedOption
+    }
   },
   toPascalCase: (string) => {
     return `${string}`
