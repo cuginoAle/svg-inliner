@@ -11,6 +11,8 @@ const svgo = new SVGO({
   plugins: [{
     cleanupAttrs: true
   }, {
+    inlineStyles: true
+  }, {
     removeDoctype: true
   }, {
     removeXMLProcInst: true
