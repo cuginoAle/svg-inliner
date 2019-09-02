@@ -17,6 +17,23 @@
 - all-icons.html
 
 **all-icons.js** exports your icons so it allows you to:
+```js
+// import the icons you need
+import {Cog, Magnifier, Trash} from './your-icons-folder/all-icons.js'
+
+
+// and use them in your React code
+const MyComponentUsingIcons = (props) => {
+  
+  return (
+    <div>
+      <button><Cog /> Settings</button>
+      <button><Magnifier /> Search</button>
+      <button><Trash /> Delete</button>      
+    </div>
+  )
+}
+```
 
 
 **all-icons.html** gives you a reference page where to look at when you need to remind yourself what icons you have at your disposal and what names you have to use to import them:
