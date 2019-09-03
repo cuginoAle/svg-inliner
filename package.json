@@ -22,5 +22,13 @@
     "input": "^1.0.1",
     "svgo": "^1.3.0"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cuginoAle/svg-inliner.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cuginoAle/svg-inliner/issues"
+  },
+  "homepage": "https://github.com/cuginoAle/svg-inliner#readme"
 }
