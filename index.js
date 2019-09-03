@@ -32,7 +32,7 @@ fs.readdir(iconsDir, async function (err, items) {
   const svgs = await Promise.all(files.map(async (file, i) => {
     const fName = file.split('.')[0]
     const fileName = toPascalCase(fName)
-    console.log(fileName)
+    process.stdout.write(`${fileName} | `)
 
     const svgTag = fs.readFileSync(`${iconsDir}/${file}`, 'utf8')
 
@@ -78,6 +78,8 @@ fs.readdir(iconsDir, async function (err, items) {
 
   fs.writeFileSync(indexFile, `import React from 'react'\n${svgsExport.join('\n')}\n`)
 
+  console.log()
+  console.log('---------------------------------------------')
   console.log(`${chalk.green('✔')} Exported ${svgsExport.length} svgs to all-icons.js`)
   console.log(`${chalk.green('✔')} Icons map: ${chalk.blueBright(htmlIconsMap)}`)
   console.log('---------------------------------------------')

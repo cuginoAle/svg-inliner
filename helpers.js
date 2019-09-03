@@ -85,7 +85,7 @@ module.exports = {
   svgo,
   getUserSettings: async () => {
     if (fs.existsSync(configPath)) {
-      const exportType = JSON.parse(fs.readFileSync(configPath))
+      const exportType = fs.readFileSync(configPath)
 
       return exportType
     } else {
