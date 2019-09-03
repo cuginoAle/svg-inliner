@@ -34,7 +34,8 @@ const MyComponentUsingIcons = (props) => {
   )
 }
 ```
-Please note that whatever prop you set it will be applied to the <svg> tag. That means you can set a custom className or any other attribute <svg> supports.
+Please note that whatever prop you set it will be applied to the <svg> tag.
+That means you can set a custom className or any other attribute `<svg>` supports.
 
 **all-icons.html** gives you a reference page where to look at when you need to remind yourself what icons you have at your disposal and what names you have to use to import them:
 
