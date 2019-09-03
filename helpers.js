@@ -83,7 +83,7 @@ const svgo = new SVGO({
 
 module.exports = {
   svgo,
-  getUserSettings: () => {
+  getUserSettings: async () => {
     if (fs.existsSync(configPath)) {
       const exportType = JSON.parse(fs.readFileSync(configPath))
 
@@ -93,8 +93,8 @@ module.exports = {
         'React component',
         'String'
       ]
-      const selectedOption = input.select('Export as ', options)
-      fs.writeFileSync(configPath, JSON.stringify(selectedOption, null, 2))
+      const selectedOption = await input.select('Export as ', options)
+      fs.writeFileSync(configPath, selectedOption)
       return selectedOption
     }
   },
