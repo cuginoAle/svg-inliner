@@ -41,12 +41,14 @@ fs.readdir(iconsDir, async function (err, items) {
     const asString = `${
       optimisedSvg.data.replace('<svg ', `\n<svg class='svg-icon ${fName}-svg' `)
     }`
-    const asRC = `props => (${
-      optimisedSvg.data
-        .replace('<svg ', `\n<svg className={(props.className||'') + ' svg-icon ${fName}-svg'} `)
-        .replace(/fill-rule/g, `fillRule`)
-        .replace(/clip-rule/g, `clipRule`)
-    })`
+    const asRC = `props => {
+    const {className,...rest}=props
+    const cName = (className||'') + ' svg-icon ${fName}-svg'
+    return (${optimisedSvg.data
+    .replace('<svg ', `\n<svg className={cName} {...rest} `)
+    .replace(/fill-rule/g, `fillRule`)
+    .replace(/clip-rule/g, `clipRule`)
+})}`
 
     return new Promise((resolve, reject) => {
       resolve({
