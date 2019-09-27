@@ -1,88 +1,12 @@
 // const { select } = require('./cliSelect.js')
 const fs = require('fs')
 const input = require('input')
-const SVGO = require('svgo')
 const currentPath = process.cwd()
 const configFileName = '.svgrc'
 const path = require('path')
 const configPath = path.resolve(currentPath, configFileName)
 
-const svgo = new SVGO({
-  plugins: [{
-    cleanupAttrs: true
-  }, {
-    inlineStyles: true
-  }, {
-    removeDoctype: true
-  }, {
-    removeXMLProcInst: true
-  }, {
-    removeComments: true
-  }, {
-    removeMetadata: true
-  }, {
-    removeTitle: true
-  }, {
-    removeDesc: true
-  }, {
-    removeUselessDefs: true
-  }, {
-    removeEditorsNSData: true
-  }, {
-    removeEmptyAttrs: true
-  }, {
-    removeHiddenElems: true
-  }, {
-    removeEmptyText: true
-  }, {
-    removeEmptyContainers: true
-  }, {
-    removeViewBox: false
-  }, {
-    cleanupEnableBackground: true
-  }, {
-    convertStyleToAttrs: true
-  }, {
-    convertColors: true
-  }, {
-    convertPathData: true
-  }, {
-    convertTransform: true
-  }, {
-    removeUnknownsAndDefaults: true
-  }, {
-    removeNonInheritableGroupAttrs: true
-  }, {
-    removeUselessStrokeAndFill: true
-  }, {
-    removeUnusedNS: true
-  }, {
-    cleanupIDs: true
-  }, {
-    cleanupNumericValues: true
-  }, {
-    moveElemsAttrsToGroup: true
-  }, {
-    moveGroupAttrsToElems: true
-  }, {
-    collapseGroups: true
-  }, {
-    removeRasterImages: false
-  }, {
-    mergePaths: true
-  }, {
-    convertShapeToPath: true
-  }, {
-    sortAttrs: true
-  }, {
-    removeDimensions: true
-  }, {
-    removeAttrs: { attrs: '(stroke|fill)' }
-  }]
-})
-
 module.exports = {
-  svgo,
   getUserSettings: async () => {
     if (fs.existsSync(configPath)) {
       const exportType = fs.readFileSync(configPath)

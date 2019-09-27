@@ -5,8 +5,9 @@ const chalk = require('chalk')
 const ver = require('./package.json').version
 const htmlTemplate = require('./htmlTemplate')
 const path = require('path')
+const svgTransformer = require('./transform/index.js')
 
-const { toPascalCase, getUserSettings, svgo } = require('./helpers')
+const { toPascalCase, getUserSettings } = require('./helpers')
 
 const currentPath = path.resolve(process.cwd())
 
@@ -27,7 +28,7 @@ fs.readdir(iconsDir, async function (err, items) {
 
   const settings = await getUserSettings()
 
-  const files = items.filter(file => file.indexOf('.svg') > 0)
+  const files = items.filter((file, i) => file.indexOf('.svg') > 0 && i < 10)
 
   const svgs = await Promise.all(files.map(async (file, i) => {
     const fName = file.split('.')[0]
@@ -36,18 +37,19 @@ fs.readdir(iconsDir, async function (err, items) {
 
     const svgTag = fs.readFileSync(`${iconsDir}/${file}`, 'utf8')
 
-    const optimisedSvg = await svgo.optimize(svgTag)
+    // const optimisedSvg = await svgo.optimize(svgTag)
+    const optimisedSvg = await svgTransformer(svgTag)
+
+    console.log(optimisedSvg)
 
     const asString = `${
-      optimisedSvg.data.replace('<svg ', `\n<svg class='svg-icon ${fName}-svg' `)
+      optimisedSvg.replace('<svg ', `\n<svg class='svg-icon ${fName}-svg' `)
     }`
     const asRC = `props => {
     const {className,...rest}=props
     const cName = (className||'') + ' svg-icon ${fName}-svg'
-    return (${optimisedSvg.data
+    return (${optimisedSvg
     .replace('<svg ', `\n<svg className={cName} {...rest} `)
-    .replace(/fill-rule/g, `fillRule`)
-    .replace(/clip-rule/g, `clipRule`)
 })}`
 
     return new Promise((resolve, reject) => {
