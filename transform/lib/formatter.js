@@ -11,7 +11,7 @@ const TEMPLATES = {
   `,
   functional: (svg, name) => `
     import React from "react";
-    
+
     export const ${name} = '${svg}'
   `
 }
@@ -24,11 +24,12 @@ const TEMPLATES = {
  */
 function reactify (svg, { type = 'functional', name = '' }) {
   const compile = TEMPLATES[type](svg, name)
-  const component = compile({
-    svg
-  })
+  // const component = compile({
+  //   svg
+  // })
+  // return component
 
-  return component
+  return svg
 }
 
 /**
