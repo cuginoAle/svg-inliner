@@ -4,23 +4,43 @@ const input = require('input')
 const currentPath = process.cwd()
 const configFileName = '.svgrc'
 const path = require('path')
-const configPath = path.resolve(currentPath, configFileName)
+const configPath = path.resolve(currentPath, "svg-inliner.json")
+
+const DEFAULT_CONFIG = {
+  createHtml: true,
+  exportType: undefined
+}
 
 module.exports = {
   getUserSettings: async () => {
-    if (fs.existsSync(configPath)) {
-      const exportType = fs.readFileSync(configPath)
 
-      return exportType
-    } else {
+    let config = DEFAULT_CONFIG
+
+    if(fs.existsSync(configPath)) {
+
+      let file = fs.readFileSync(configPath)
+      let data = JSON.parse(file);
+
+      for (var key in data) {
+        config[key] = data[key]
+      }
+    }
+
+    let prevConfig = Object.assign({}, config)
+
+    if(!config.exportType) {
       const options = [
         'React component',
         'String'
       ]
       const selectedOption = await input.select('Export as ', options)
-      fs.writeFileSync(configPath, selectedOption)
-      return selectedOption
+      config.exportType = selectedOption
     }
+
+    if(prevConfig != config) {
+      fs.writeFileSync(configPath, JSON.stringify(config))
+    }
+    return config
   },
   toPascalCase: (string) => {
     return `${string}`

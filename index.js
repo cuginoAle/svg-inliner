@@ -40,7 +40,7 @@ fs.readdir(iconsDir, async function (err, items) {
     // const optimisedSvg = await svgo.optimize(svgTag)
     const optimisedSvg = await svgTransformer(svgTag)
 
-    console.log(optimisedSvg)
+    // console.log(optimisedSvg)
 
     const asString = `${
       optimisedSvg.replace('<svg ', `\n<svg class='svg-icon ${fName}-svg' `)
@@ -65,25 +65,28 @@ fs.readdir(iconsDir, async function (err, items) {
     return `export const ${fileName} =  ${settings === 'String' ? (`\`${asString}\``) : asRC}`
   })
 
-  const iconsHtml = svgs.map(obj => `
-      <div class='icon-def'>
-        <span class='icon-img'>${obj.asString}</span>      
-        <span class='icon-name'>${obj.fileName}</span>
-      </div>
-    `)
+  if(settings.createHtml) {
 
-  fs.writeFileSync(htmlIconsMap, htmlTemplate(`
-    <div class='icons-list'>
-      ${iconsHtml.join('')}
-    </div>
-    `, ver))
+    const iconsHtml = svgs.map(obj => `
+        <div class='icon-def'>
+          <span class='icon-img'>${obj.asString}</span>
+          <span class='icon-name'>${obj.fileName}</span>
+        </div>
+      `)
+
+    fs.writeFileSync(htmlIconsMap, htmlTemplate(`
+      <div class='icons-list'>
+        ${iconsHtml.join('')}
+      </div>
+      `, ver))
+    }
 
   fs.writeFileSync(indexFile, `import React from 'react'\n${svgsExport.join('\n')}\n`)
 
   console.log()
   console.log('---------------------------------------------')
   console.log(`${chalk.green('✔')} Exported ${svgsExport.length} svgs to all-icons.js`)
-  console.log(`${chalk.green('✔')} Icons map: ${chalk.blueBright(htmlIconsMap)}`)
+  if(settings.createHtml) console.log(`${chalk.green('✔')} Icons map: ${chalk.blueBright(htmlIconsMap)}`)
   console.log('---------------------------------------------')
   console.log()
 })
