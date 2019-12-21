@@ -9,11 +9,13 @@ const svgTransformer = require('./transform/index.js')
 
 const { toPascalCase, getUserSettings } = require('./helpers')
 
+getUserSettings().then(settings => {
+
 const currentPath = path.resolve(process.cwd())
 
 const exportDir = `${currentPath}`
 const indexFile = `${exportDir}/all-icons.js`
-const iconsDir = `${currentPath}`
+const iconsDir = `${currentPath}${settings.iconsDirectory}` 
 const htmlIconsMap = `${exportDir}/all-icons.html`
 
 const logo = require('./logo')
@@ -25,8 +27,6 @@ fs.readdir(iconsDir, async function (err, items) {
     process.exitCode(1)
     return
   }
-
-  const settings = await getUserSettings()
 
   const files = items.filter((file, i) => file.indexOf('.svg') > 0 && i < 10)
 
@@ -89,4 +89,6 @@ fs.readdir(iconsDir, async function (err, items) {
   if(settings.createHtml) console.log(`${chalk.green('✔')} Icons map: ${chalk.blueBright(htmlIconsMap)}`)
   console.log('---------------------------------------------')
   console.log()
+})
+
 })

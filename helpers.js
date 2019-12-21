@@ -10,6 +10,7 @@ const chalk = require('chalk')
 const DEFAULT_CONFIG = {
   createHtml: undefined,
   exportType: undefined,
+  iconsDirectory: undefined,
 }
 
 module.exports = {
@@ -56,6 +57,15 @@ module.exports = {
       ]
       const selectedOption = await input.select('Generate Documentation:', options)
       config.createHtml = selectedOption
+
+      console.log('');
+    }
+
+    if(config.iconsDirectory === undefined) {
+
+      let data = await input.text('SVG File location [relative to current path]', { default: '/' })
+
+      config.iconsDirectory = `/${data.indexOf('/') == 0 ? data.replace('/', '') : data.indexOf('./') == 0 ? data.replace('./', '') : data}`
 
       console.log('');
     }
