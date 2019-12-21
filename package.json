@@ -16,6 +16,7 @@
     "cli"
   ],
   "author": "alessio carnevale",
+  "contributors": ["Raphael Dick (https://github.com/raphael-dick/)"],
   "license": "ISC",
   "dependencies": {
     "chalk": "^2.4.2",
