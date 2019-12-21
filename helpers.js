@@ -5,6 +5,7 @@ const currentPath = process.cwd()
 const configFileName = '.svgrc'
 const path = require('path')
 const configPath = path.resolve(currentPath, "svg-inliner.json")
+const chalk = require('chalk')
 
 const DEFAULT_CONFIG = {
   createHtml: undefined,
@@ -20,11 +21,16 @@ module.exports = {
     if(fs.existsSync(configPath)) {
 
       let file = fs.readFileSync(configPath)
-      let data = JSON.parse(file);
+      try {
+        let data = JSON.parse(file);
 
-      // asign loaded values
-      for (var key in data) {
-        config[key] = data[key]
+        // asign loaded values
+        for (var key in data) {
+          config[key] = data[key]
+        }
+      } catch (e) {
+        console.log(chalk.red('✘ Error while loading configuration file.'))
+        console.log('  Changes may overwrite your existing configuration. \n')
       }
     }
 
@@ -38,6 +44,8 @@ module.exports = {
       ]
       const selectedOption = await input.select('Export as ', options)
       config.exportType = selectedOption
+
+      console.log('');
     }
 
     // get option for documentation generation
@@ -48,11 +56,18 @@ module.exports = {
       ]
       const selectedOption = await input.select('Generate Documentation:', options)
       config.createHtml = selectedOption
+
+      console.log('');
     }
 
     // save config if changed
-    if(prevConfig != config) {
-      fs.writeFileSync(configPath, JSON.stringify(config))
+    if(JSON.stringify(prevConfig) != JSON.stringify(config)) {
+      try {
+        fs.writeFileSync(configPath, JSON.stringify(config))
+        console.log(chalk.green('✔ Configuration file sucessfully saved. \n'))
+      } catch (e) {
+        console.log(chalk.red('✘ Error while saving configuration file. \n'))
+      }
     }
 
     return config
