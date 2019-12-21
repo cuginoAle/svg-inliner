@@ -7,8 +7,8 @@ const path = require('path')
 const configPath = path.resolve(currentPath, "svg-inliner.json")
 
 const DEFAULT_CONFIG = {
-  createHtml: true,
-  exportType: undefined
+  createHtml: undefined,
+  exportType: undefined,
 }
 
 module.exports = {
@@ -29,14 +29,23 @@ module.exports = {
     let prevConfig = Object.assign({}, config)
 
     if(!config.exportType) {
+    if(config.exportType === undefined) {
       const options = [
-        'React component',
-        'String'
+        { name: 'React Component', value: 'react_component' },
+        { name: 'String', value: 'string' },
       ]
       const selectedOption = await input.select('Export as ', options)
       config.exportType = selectedOption
     }
 
+    if(config.createHtml === undefined) {
+      const options = [
+        { name: 'Generate HTML', value: true },
+        { name: 'Skip Generation', value: false },
+      ]
+      const selectedOption = await input.select('Generate Documentation:', options)
+      config.createHtml = selectedOption
+    }
     if(prevConfig != config) {
       fs.writeFileSync(configPath, JSON.stringify(config))
     }
