@@ -65,7 +65,7 @@ fs.readdir(iconsDir, async function (err, items) {
     return `export const ${fileName} =  ${settings === 'String' ? (`\`${asString}\``) : asRC}`
   })
 
-  if(settings.createHtml) {
+  if(settings.createHtml) { // generate html documentation if enabled
 
     const iconsHtml = svgs.map(obj => `
         <div class='icon-def'>

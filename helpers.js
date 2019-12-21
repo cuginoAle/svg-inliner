@@ -16,19 +16,21 @@ module.exports = {
 
     let config = DEFAULT_CONFIG
 
+    // load config if exists
     if(fs.existsSync(configPath)) {
 
       let file = fs.readFileSync(configPath)
       let data = JSON.parse(file);
 
+      // asign loaded values
       for (var key in data) {
         config[key] = data[key]
       }
     }
 
-    let prevConfig = Object.assign({}, config)
+    let prevConfig = Object.assign({}, config) // create object copy for detecting changes
 
-    if(!config.exportType) {
+    // get option for export type
     if(config.exportType === undefined) {
       const options = [
         { name: 'React Component', value: 'react_component' },
@@ -38,6 +40,7 @@ module.exports = {
       config.exportType = selectedOption
     }
 
+    // get option for documentation generation
     if(config.createHtml === undefined) {
       const options = [
         { name: 'Generate HTML', value: true },
@@ -46,9 +49,12 @@ module.exports = {
       const selectedOption = await input.select('Generate Documentation:', options)
       config.createHtml = selectedOption
     }
+
+    // save config if changed
     if(prevConfig != config) {
       fs.writeFileSync(configPath, JSON.stringify(config))
     }
+
     return config
   },
   toPascalCase: (string) => {
