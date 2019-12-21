@@ -62,7 +62,7 @@ fs.readdir(iconsDir, async function (err, items) {
   }))
 
   const svgsExport = svgs.map(({ fileName, asRC, asString }) => {
-    return `export const ${fileName} =  ${settings === 'String' ? (`\`${asString}\``) : asRC}`
+    return `export const ${fileName} =  ${settings.exportType === 'string' ? (`\`${asString}\``) : asRC}`
   })
 
   if(settings.createHtml) { // generate html documentation if enabled
