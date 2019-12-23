@@ -16,6 +16,7 @@
     "cli"
   ],
   "author": "alessio carnevale",
+  "contributors": ["Raphael Dick (https://github.com/raphael-dick/)"],
   "license": "ISC",
   "dependencies": {
     "chalk": "^2.4.2",
@@ -24,7 +25,8 @@
     "lodash.camelcase": "^4.3.0",
     "lodash.isplainobject": "^4.0.6",
     "lodash.isstring": "^4.0.1",
-    "svg-parser": "^2.0.2",
+    "prettier": "^1.18.2",
+    "svg-parser": "^1.0.6",
     "svgo": "^1.3.0"
   },
   "devDependencies": {},
